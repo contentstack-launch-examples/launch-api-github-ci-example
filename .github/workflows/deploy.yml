@@ -1,0 +1,31 @@
+name: Deploy to Contentstack Launch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      
+      - name: Install deployment script dependencies
+        run: npm install form-data archiver dotenv
+      
+      - name: Deploy to Contentstack Launch
+        env:
+          CONTENTSTACK_CLIENT_ID: ${{ secrets.CONTENTSTACK_CLIENT_ID }}
+          CONTENTSTACK_CLIENT_SECRET: ${{ secrets.CONTENTSTACK_CLIENT_SECRET }}
+          CONTENTSTACK_REGION: ${{ secrets.CONTENTSTACK_REGION }}
+          PROJECT_UID: ${{ secrets.PROJECT_UID }}
+          ENVIRONMENT_UID: ${{ secrets.ENVIRONMENT_UID }}
+        run: node deploy-api.js
